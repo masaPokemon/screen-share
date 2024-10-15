@@ -1,64 +1,10 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iPad Screen Sharing</title>
-    <style>
-        video {
-            width: 100%;
-            max-width: 600px;
-            border: 1px solid black;
-        }
-    </style>
-</head>
-<body>
-    <h1>iPad Screen Sharing</h1>
-    <video id="localVideo" autoplay muted></video>
-    <video id="remoteVideo" autoplay></video>
-
-    <script>
-        let localStream;
-        let remoteStream;
-        const peerConnection = new RTCPeerConnection();
-
-        // メディアストリームを取得
-        async function startCapture() {
-            try {
-                localStream = await navigator.mediaDevices.getDisplayMedia({
-                    video: true,
-                    audio: true
-                });
-                document.getElementById('localVideo').srcObject = localStream;
-
-                localStream.getTracks().forEach(track => {
-                    peerConnection.addTrack(track, localStream);
-                });
-            } catch (error) {
-                console.error("Error accessing media devices.", error);
-            }
-        }
-
-        // リモートストリームを受け取る
-        peerConnection.ontrack = (event) => {
-            remoteStream = event.streams[0];
-            document.getElementById('remoteVideo').srcObject = remoteStream;
-        };
-
-        // シグナリングを設定（ここでは単純化しています）
-        async function createOffer() {
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-            // シグナリングサーバーを通じてofferを送信する処理を追加
-        }
-
-        // シグナリングサーバーから受け取ったofferまたはanswerを設定する
-        async function handleRemoteDescription(desc) {
-            await peerConnection.setRemoteDescription(desc);
-        }
-
-        // ページがロードされたらキャプチャを開始
-        window.onload = startCapture;
-    </script>
-</body>
+<html>
+  <head>
+    <!-- 静的ファイルを配置するディレクトリを指定 -->
+    <script type="module" src="index.js"></script>
+  </head>
+  <body style="display: grid; grid-template-columns: 1fr 1fr;">
+    <!-- `onClickBtn` はこれから定義 -->
+    <button style="position: absolute; z-index: 1;" onClick="onClickBtn()">Join</button>
+  </body>
 </html>
